@@ -1,9 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
 import 'package:travelblog/color/color.dart';
 import 'package:travelblog/features/pages/pages.dart';
+import 'package:travelblog/features/pages/search/View/search_view.dart';
 
 class HomeView extends StatefulWidget {
   static route() => MaterialPageRoute(
@@ -29,18 +28,26 @@ class _HomeViewState extends State<HomeView> {
     return Scaffold(
       body: CustomScrollView(slivers: <Widget>[
         SliverAppBar(
+          toolbarHeight: 50,
+          floating: true,
           automaticallyImplyLeading: false,
-          pinned: true,
+          pinned: false,
           backgroundColor: Colors.white,
           actions: <Widget>[
             Container(
+              width: 40,
+              height: 40,
               margin: const EdgeInsets.only(right: 20),
               decoration: BoxDecoration(
-                  shape: BoxShape.circle, color: Colors.grey.withOpacity(0.3)),
-              child: IconButton(
-                icon: Icon(Icons.search),
-                iconSize: 30,
-                onPressed: () {},
+                  shape: BoxShape.circle, color: Colors.grey.withOpacity(0.1), ),
+              child: Center(
+                child: IconButton(
+                  icon: Icon(Icons.search),
+                  iconSize: 25,
+                  onPressed: () {
+                    Navigator.push(context, SearchView.route());
+                  },
+                ),
               ),
             ),
           ],
@@ -58,7 +65,7 @@ class _HomeViewState extends State<HomeView> {
         items: [
           BottomNavigationBarItem(
             icon: Container(
-              padding: const EdgeInsets.all(8),
+              padding: const EdgeInsets.all(5),
               decoration: BoxDecoration(
                   shape: BoxShape.circle, color: Colors.grey.withOpacity(0.1)),
               child: Icon(
@@ -69,7 +76,7 @@ class _HomeViewState extends State<HomeView> {
           ),
           BottomNavigationBarItem(
               icon: Container(
-                padding: const EdgeInsets.all(8),
+                padding: const EdgeInsets.all(5),
                 decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: Colors.grey.withOpacity(0.1)),
@@ -82,7 +89,7 @@ class _HomeViewState extends State<HomeView> {
               label: 'Lọc'),
           BottomNavigationBarItem(
               icon: Container(
-                padding: const EdgeInsets.all(8),
+                padding: const EdgeInsets.all(5),
                 decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: Colors.grey.withOpacity(0.1)),
@@ -93,7 +100,7 @@ class _HomeViewState extends State<HomeView> {
               label: 'Tạo bài viết'),
           BottomNavigationBarItem(
               icon: Container(
-                padding: const EdgeInsets.all(8),
+                padding: const EdgeInsets.all(5),
                 decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: Colors.grey.withOpacity(0.1)),
@@ -105,7 +112,7 @@ class _HomeViewState extends State<HomeView> {
         ],
         activeColor: PJcolor.buttonColor, // Màu của nhãn khi được chọn
         inactiveColor: Colors.grey, // Màu của nhãn khi không được chọn
-        height: 60,
+        height: 80,
       ),
     );
   }

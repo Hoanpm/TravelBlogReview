@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:travelblog/color/color.dart';
 //import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class BlogCard extends StatelessWidget {
@@ -50,7 +49,7 @@ class BlogCard extends StatelessWidget {
                           ),
                           SizedBox(width: 5),
                           Text(
-                            userName,
+                            "@$userName",
                             style: TextStyle(color: Colors.grey),
                           ),
                         ],

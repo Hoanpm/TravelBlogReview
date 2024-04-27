@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:travelblog/features/pages/profile/view/user_profile_view.dart';
 import 'package:travelblog/features/pages/reviewblog/blog_list.dart';
 
 class AppPages {
@@ -6,6 +7,6 @@ class AppPages {
     BlogList(),
     Text("FilterScreen"),
     Text("WriteScreen"),
-    Text("ProfileScreen")
+    UserProfile(),
   ];
 }
