@@ -24,11 +24,12 @@ class AuthField extends StatelessWidget {
           )
         ),
         contentPadding: const EdgeInsets.fromLTRB(0, 18, 18, 18),
-        hintText: hintText,
+        hintText: hintText, 
         hintStyle: const TextStyle(
           fontFamily: "noto",
+          fontWeight: FontWeight.bold,
           fontSize: 20,
-          color: PJcolor.primaryColor,
+          color: PJcolor.primaryColor2,
         )
       ),
     );
