@@ -1,10 +1,13 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:travelblog/color/color.dart';
 import 'package:travelblog/common/bigButton.dart';
 import 'package:travelblog/features/auth/view/register_view.dart';
 import 'package:travelblog/features/auth/widget/auth_field.dart';
 import 'package:travelblog/features/pages/home/view/home_view.dart';
+
+final supabase = Supabase.instance.client;
 
 class LoginView extends StatefulWidget {
   static route() => MaterialPageRoute(builder: (context) => const LoginView());
@@ -65,7 +68,18 @@ class LoginViewState extends State<LoginView> {
                     height: 40,
                   ),
                   BigButton(
-                      onTap: () {
+                      onTap: () async {
+                        final authResponse =
+                            await supabase.auth.signInWithPassword(
+                          email: emailController.text,
+                          password: passwordController.text,
+                        );
+
+                        final email = await authResponse.user?.email;
+
+                        print(email);
+
+                        if (!context.mounted) return;
                         Navigator.push(context, HomeView.route());
                       },
                       label: "Đăng Nhập"),

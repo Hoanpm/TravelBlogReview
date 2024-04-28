@@ -1,9 +1,12 @@
 import "package:flutter/gestures.dart";
 import "package:flutter/material.dart";
+import "package:supabase_flutter/supabase_flutter.dart";
 import "package:travelblog/color/color.dart";
 import "package:travelblog/common/bigButton.dart";
 import "package:travelblog/features/auth/view/login_view.dart";
 import "package:travelblog/features/auth/widget/auth_field.dart";
+
+final supabase = Supabase.instance.client;
 
 class RegisterView extends StatefulWidget {
   static route() =>
@@ -84,7 +87,24 @@ class _RegisterViewState extends State<RegisterView> {
                   const SizedBox(
                     height: 40,
                   ),
-                  BigButton(onTap: () {}, label: "Đăng Ký"),
+                  BigButton(
+                      onTap: () async {
+                        final authResponse = await supabase.auth.signUp(
+                          email: emailController.text,
+                          password: passwordController.text,
+                        );
+
+                        await supabase.from('users').insert({
+                          'id': authResponse.user?.id as String,
+                          'email': authResponse.user?.email,
+                          'fullName': fullNameController.text,
+                          'username': userNameController.text,
+                        });
+
+                        if (!context.mounted) return;
+                        Navigator.push(context, LoginView.route());
+                      },
+                      label: "Đăng Ký"),
                   const SizedBox(
                     height: 30,
                   ),
@@ -108,7 +128,6 @@ class _RegisterViewState extends State<RegisterView> {
                             },
                         )
                       ])),
-                  
                 ],
               ),
             ),
