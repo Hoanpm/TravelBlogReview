@@ -21,12 +21,28 @@ class LoginView extends StatefulWidget {
 class LoginViewState extends State<LoginView> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  var error = "";
 
   @override
   void dispose() {
     super.dispose();
     emailController.dispose();
     passwordController.dispose();
+  }
+
+  Future<void> signIn() async {
+    try {
+      await supabase.auth.signInWithPassword(
+        email: emailController.text,
+        password: passwordController.text,
+      );
+
+    } on AuthException catch (e) {
+      print(e);
+      setState(() {
+        error = "Thông tin đăng nhập chưa chính xác !";
+      });
+    }
   }
 
   @override
@@ -64,23 +80,45 @@ class LoginViewState extends State<LoginView> {
                     controller: passwordController,
                     hintText: "Password",
                   ),
-                  const SizedBox(
-                    height: 40,
-                  ),
+                  error != ""
+                      ? Container(
+                          width: MediaQuery.of(context).size.width,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Text(
+                                "* $error",
+                                style: TextStyle(
+                                  color: Colors.red,
+                                  fontSize: 13,
+                                  fontFamily: "noto",
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              SizedBox(
+                                height: 20,
+                              )
+                            ],
+                          ),
+                        )
+                      : SizedBox(
+                          height: 40,
+                        ),
                   BigButton(
-                      onTap: () async {
-                        final authResponse =
-                            await supabase.auth.signInWithPassword(
-                          email: emailController.text,
-                          password: passwordController.text,
-                        );
-
-                        final email = await authResponse.user?.email;
-
-                        print(email);
-
-                        if (!context.mounted) return;
-                        Navigator.push(context, HomeView.route());
+                      onTap: () {
+                        if (emailController.text != "" ||
+                            passwordController.text != "") {
+                          signIn();
+                          if (!context.mounted) return;
+                          Navigator.push(context, HomeView.route());
+                        } else {
+                          setState(() {
+                            error = "Thông tin đăng nhập chưa chính xác !";
+                          });
+                        }
                       },
                       label: "Đăng Nhập"),
                   const SizedBox(

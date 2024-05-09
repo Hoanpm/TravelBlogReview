@@ -24,6 +24,7 @@ class _RegisterViewState extends State<RegisterView> {
   final passwordController = TextEditingController();
   final fullNameController = TextEditingController();
   final repeatPasswordController = TextEditingController();
+  var error = "";
 
   @override
   void dispose() {
@@ -33,6 +34,27 @@ class _RegisterViewState extends State<RegisterView> {
     userNameController.dispose();
     repeatPasswordController.dispose();
     fullNameController.dispose();
+  }
+
+  Future<void> signUpUser() async {
+    try {
+      final AuthResponse authResponse = await supabase.auth.signUp(
+        email: emailController.text,
+        password: passwordController.text,
+      );
+
+      await supabase.from('users').insert({
+        'id': authResponse.user?.id as String,
+        'email': authResponse.user?.email,
+        'fullName': fullNameController.text,
+        'username': userNameController.text,
+      });
+    } on AuthException catch (e) {
+      print(e);
+      setState(() {
+        error = "Tài khoản đã tồn tại !";
+      });
+    }
   }
 
   @override
@@ -84,25 +106,50 @@ class _RegisterViewState extends State<RegisterView> {
                     controller: repeatPasswordController,
                     hintText: "Nhập lại mật khẩu",
                   ),
-                  const SizedBox(
-                    height: 40,
-                  ),
+                  error != ""
+                      ? Container(
+                          width: MediaQuery.of(context).size.width,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Text(
+                                "* $error",
+                                style: TextStyle(
+                                  color: Colors.red,
+                                  fontSize: 13,
+                                  fontFamily: "noto",
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              SizedBox(
+                                height: 20,
+                              )
+                            ],
+                          ),
+                        )
+                      : SizedBox(
+                          height: 40,
+                        ),
                   BigButton(
-                      onTap: () async {
-                        final authResponse = await supabase.auth.signUp(
-                          email: emailController.text,
-                          password: passwordController.text,
-                        );
-
-                        await supabase.from('users').insert({
-                          'id': authResponse.user?.id as String,
-                          'email': authResponse.user?.email,
-                          'fullName': fullNameController.text,
-                          'username': userNameController.text,
-                        });
-
-                        if (!context.mounted) return;
-                        Navigator.push(context, LoginView.route());
+                      onTap: () {
+                        if (fullNameController.text == "" ||
+                            emailController.text == "" ||
+                            userNameController.text == "" ||
+                            passwordController.text == "" ||
+                            repeatPasswordController.text == "" ||
+                            passwordController.text !=
+                                repeatPasswordController.text) {
+                          setState(() {
+                            error = "Thông tin bạn nhập chưa chính xác !";
+                          });
+                        } else {
+                          signUpUser();
+                          if (!context.mounted) return;
+                          Navigator.push(context, LoginView.route());
+                        }
                       },
                       label: "Đăng Ký"),
                   const SizedBox(
