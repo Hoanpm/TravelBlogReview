@@ -64,7 +64,7 @@ flutter:
     - images/
   #   - images/a_dot_ham.jpeg
 
-  # An image asset can refer to one or more resolution-specific "variants", see
+  # An image asset can refer to one or more resolution-specific "variants", see 
   # https://flutter.dev/assets-and-images/#resolution-aware
 
   # For details regarding adding assets from package dependencies, see
@@ -85,11 +85,6 @@ flutter:
       fonts:
         - asset: fonts\NotoSerifDisplay-VariableFont_wdth,wght.ttf
         - asset: fonts\NotoSerifDisplay-Italic-VariableFont_wdth,wght.ttf
-          weight: 900
-    - family: arial
-      fonts:
-        - asset: fonts\ARIAL.ttf
-        - asset: fonts\ARIALBD.ttf
           weight: 900
   #
   # For details regarding fonts from package dependencies,

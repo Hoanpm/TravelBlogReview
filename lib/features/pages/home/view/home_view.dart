@@ -64,7 +64,7 @@ class _HomeViewState extends State<HomeView> {
         onTap: onPageChange,
         items: [
           BottomNavigationBarItem(
-            icon: Container(
+            icon:Container(
               padding: const EdgeInsets.all(5),
               decoration: BoxDecoration(
                   shape: BoxShape.circle, color: Colors.grey.withOpacity(0.1)),
@@ -72,7 +72,6 @@ class _HomeViewState extends State<HomeView> {
                 _page == 0 ? Icons.home : Icons.home_outlined,
               ),
             ),
-            label: 'Home',
           ),
           BottomNavigationBarItem(
               icon: Container(
@@ -86,7 +85,7 @@ class _HomeViewState extends State<HomeView> {
                       : Icons.filter_alt_outlined,
                 ),
               ),
-              label: 'Lọc'),
+            ),
           BottomNavigationBarItem(
               icon: Container(
                 padding: const EdgeInsets.all(5),
@@ -97,7 +96,7 @@ class _HomeViewState extends State<HomeView> {
                   _page == 2 ? Icons.create : Icons.create_outlined,
                 ),
               ),
-              label: 'Tạo bài viết'),
+            ),
           BottomNavigationBarItem(
               icon: Container(
                 padding: const EdgeInsets.all(5),
@@ -108,11 +107,11 @@ class _HomeViewState extends State<HomeView> {
                   _page == 3 ? Icons.person : Icons.person_outline,
                 ),
               ),
-              label: 'Profile'),
+            ),
         ],
         activeColor: PJcolor.buttonColor, // Màu của nhãn khi được chọn
         inactiveColor: Colors.grey, // Màu của nhãn khi không được chọn
-        height: 80,
+        height: 50,
       ),
     );
   }
