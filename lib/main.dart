@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:travelblog/features/auth/view/getting_start_view.dart';
-import 'package:travelblog/features/auth/view/login_view.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 Future<void> main() async {
