@@ -134,8 +134,8 @@ class _BlogCreateState extends State<BlogCreate> {
               padding: EdgeInsets.only(left: 20, top: 20),
               child: Column(
                 children: [
-                  AuthField(controller: location, hintText: "Địa chỉ ..."),
-                  AuthField(controller: content, hintText: "Nội dung bài viết ..."),
+                  AuthField(controller: location, hintText: "Địa chỉ ...", ishiddenText: false,),
+                  AuthField(controller: content, hintText: "Nội dung bài viết ...", ishiddenText: false,),
                 ],
               ),
             )
