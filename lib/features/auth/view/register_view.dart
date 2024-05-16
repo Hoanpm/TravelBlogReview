@@ -1,9 +1,12 @@
 import "package:flutter/gestures.dart";
 import "package:flutter/material.dart";
+import "package:supabase_flutter/supabase_flutter.dart";
 import "package:travelblog/color/color.dart";
 import "package:travelblog/common/bigButton.dart";
 import "package:travelblog/features/auth/view/login_view.dart";
 import "package:travelblog/features/auth/widget/auth_field.dart";
+
+final supabase = Supabase.instance.client;
 
 class RegisterView extends StatefulWidget {
   static route() =>
@@ -21,6 +24,7 @@ class _RegisterViewState extends State<RegisterView> {
   final passwordController = TextEditingController();
   final fullNameController = TextEditingController();
   final repeatPasswordController = TextEditingController();
+  var error = "";
 
   @override
   void dispose() {
@@ -30,6 +34,27 @@ class _RegisterViewState extends State<RegisterView> {
     userNameController.dispose();
     repeatPasswordController.dispose();
     fullNameController.dispose();
+  }
+
+  Future<void> signUpUser() async {
+    try {
+      final AuthResponse authResponse = await supabase.auth.signUp(
+        email: emailController.text,
+        password: passwordController.text,
+      );
+
+      await supabase.from('users').insert({
+        'id': authResponse.user?.id as String,
+        'email': authResponse.user?.email,
+        'fullName': fullNameController.text,
+        'username': userNameController.text,
+      });
+    } on AuthException catch (e) {
+      print(e);
+      setState(() {
+        error = "Tài khoản đã tồn tại !";
+      });
+    }
   }
 
   @override
@@ -81,10 +106,52 @@ class _RegisterViewState extends State<RegisterView> {
                     controller: repeatPasswordController,
                     hintText: "Nhập lại mật khẩu",
                   ),
-                  const SizedBox(
-                    height: 40,
-                  ),
-                  BigButton(onTap: () {}, label: "Đăng Ký"),
+                  error != ""
+                      ? Container(
+                          width: MediaQuery.of(context).size.width,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Text(
+                                "* $error",
+                                style: TextStyle(
+                                  color: Colors.red,
+                                  fontSize: 13,
+                                  fontFamily: "noto",
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              SizedBox(
+                                height: 20,
+                              )
+                            ],
+                          ),
+                        )
+                      : SizedBox(
+                          height: 40,
+                        ),
+                  BigButton(
+                      onTap: () {
+                        if (fullNameController.text == "" ||
+                            emailController.text == "" ||
+                            userNameController.text == "" ||
+                            passwordController.text == "" ||
+                            repeatPasswordController.text == "" ||
+                            passwordController.text !=
+                                repeatPasswordController.text) {
+                          setState(() {
+                            error = "Thông tin bạn nhập chưa chính xác !";
+                          });
+                        } else {
+                          signUpUser();
+                          if (!context.mounted) return;
+                          Navigator.push(context, LoginView.route());
+                        }
+                      },
+                      label: "Đăng Ký"),
                   const SizedBox(
                     height: 30,
                   ),
@@ -108,7 +175,6 @@ class _RegisterViewState extends State<RegisterView> {
                             },
                         )
                       ])),
-                  
                 ],
               ),
             ),
