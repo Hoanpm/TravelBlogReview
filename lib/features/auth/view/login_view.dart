@@ -1,10 +1,13 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:travelblog/color/color.dart';
 import 'package:travelblog/common/bigButton.dart';
 import 'package:travelblog/features/auth/view/register_view.dart';
 import 'package:travelblog/features/auth/widget/auth_field.dart';
 import 'package:travelblog/features/pages/home/view/home_view.dart';
+
+final supabase = Supabase.instance.client;
 
 class LoginView extends StatefulWidget {
   static route() => MaterialPageRoute(builder: (context) => const LoginView());
@@ -18,12 +21,28 @@ class LoginView extends StatefulWidget {
 class LoginViewState extends State<LoginView> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  var error = "";
 
   @override
   void dispose() {
     super.dispose();
     emailController.dispose();
     passwordController.dispose();
+  }
+
+  Future<void> signIn() async {
+    try {
+      await supabase.auth.signInWithPassword(
+        email: emailController.text,
+        password: passwordController.text,
+      );
+
+    } on AuthException catch (e) {
+      print(e);
+      setState(() {
+        error = "Thông tin đăng nhập chưa chính xác !";
+      });
+    }
   }
 
   @override
@@ -61,12 +80,45 @@ class LoginViewState extends State<LoginView> {
                     controller: passwordController,
                     hintText: "Password",
                   ),
-                  const SizedBox(
-                    height: 40,
-                  ),
+                  error != ""
+                      ? Container(
+                          width: MediaQuery.of(context).size.width,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Text(
+                                "* $error",
+                                style: TextStyle(
+                                  color: Colors.red,
+                                  fontSize: 13,
+                                  fontFamily: "noto",
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              SizedBox(
+                                height: 20,
+                              )
+                            ],
+                          ),
+                        )
+                      : SizedBox(
+                          height: 40,
+                        ),
                   BigButton(
                       onTap: () {
-                        Navigator.push(context, HomeView.route());
+                        if (emailController.text != "" ||
+                            passwordController.text != "") {
+                          signIn();
+                          if (!context.mounted) return;
+                          Navigator.push(context, HomeView.route());
+                        } else {
+                          setState(() {
+                            error = "Thông tin đăng nhập chưa chính xác !";
+                          });
+                        }
                       },
                       label: "Đăng Nhập"),
                   const SizedBox(
