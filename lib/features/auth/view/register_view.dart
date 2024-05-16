@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import "package:flutter/gestures.dart";
 import "package:flutter/material.dart";
 import "package:supabase_flutter/supabase_flutter.dart";
@@ -49,6 +51,9 @@ class _RegisterViewState extends State<RegisterView> {
         'fullName': fullNameController.text,
         'username': userNameController.text,
       });
+
+      if (!context.mounted) return;
+      Navigator.push(context, LoginView.route());
     } on AuthException catch (e) {
       print(e);
       setState(() {
@@ -56,6 +61,8 @@ class _RegisterViewState extends State<RegisterView> {
       });
     }
   }
+
+  
 
   @override
   Widget build(BuildContext context) {
@@ -89,22 +96,27 @@ class _RegisterViewState extends State<RegisterView> {
                   AuthField(
                     controller: fullNameController,
                     hintText: "Họ tên",
+                    ishiddenText: false,
                   ),
                   AuthField(
                     controller: emailController,
                     hintText: "Email",
+                    ishiddenText: false,
                   ),
                   AuthField(
                     controller: userNameController,
                     hintText: "Username",
+                    ishiddenText: false,
                   ),
                   AuthField(
                     controller: passwordController,
                     hintText: "Mật khẩu",
+                    ishiddenText: true,
                   ),
                   AuthField(
                     controller: repeatPasswordController,
                     hintText: "Nhập lại mật khẩu",
+                    ishiddenText: true,
                   ),
                   error != ""
                       ? Container(
@@ -147,8 +159,7 @@ class _RegisterViewState extends State<RegisterView> {
                           });
                         } else {
                           signUpUser();
-                          if (!context.mounted) return;
-                          Navigator.push(context, LoginView.route());
+                          
                         }
                       },
                       label: "Đăng Ký"),
