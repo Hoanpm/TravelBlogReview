@@ -38,7 +38,7 @@ class _CustomDropdownState extends State<CustomDropdown> {
           selectedValue = newValue;
         });
       },
-      hint: Text(widget.hintText,style: TextStyle(color:Colors.white),),
+      hint: Text(widget.hintText,style: TextStyle(color:Colors.white, fontWeight: FontWeight.bold),),
     );
   }
 }
