@@ -7,6 +7,7 @@ import "package:travelblog/color/color.dart";
 import "package:travelblog/common/bigButton.dart";
 import "package:travelblog/features/auth/view/login_view.dart";
 import "package:travelblog/features/auth/widget/auth_field.dart";
+import "package:travelblog/features/auth/widget/custom_alert_box.dart";
 
 final supabase = Supabase.instance.client;
 
@@ -26,7 +27,6 @@ class _RegisterViewState extends State<RegisterView> {
   final passwordController = TextEditingController();
   final fullNameController = TextEditingController();
   final repeatPasswordController = TextEditingController();
-  var error = "";
 
   @override
   void dispose() {
@@ -56,9 +56,9 @@ class _RegisterViewState extends State<RegisterView> {
       Navigator.push(context, LoginView.route());
     } on AuthException catch (e) {
       print(e);
-      setState(() {
-        error = "Tài khoản đã tồn tại !";
-      });
+      var dialog = const CustomAlertDialog(
+          title: "Notice", message: "Thông tin đăng nhập chưa chính xác");
+      showDialog(context: context, builder: (BuildContext context) => dialog);
     }
   }
 
@@ -118,33 +118,7 @@ class _RegisterViewState extends State<RegisterView> {
                     hintText: "Nhập lại mật khẩu",
                     ishiddenText: true,
                   ),
-                  error != ""
-                      ? Container(
-                          width: MediaQuery.of(context).size.width,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              SizedBox(
-                                height: 10,
-                              ),
-                              Text(
-                                "* $error",
-                                style: TextStyle(
-                                  color: Colors.red,
-                                  fontSize: 13,
-                                  fontFamily: "noto",
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              SizedBox(
-                                height: 20,
-                              )
-                            ],
-                          ),
-                        )
-                      : SizedBox(
-                          height: 40,
-                        ),
+                  SizedBox(height: 20,),
                   BigButton(
                       onTap: () {
                         if (fullNameController.text == "" ||
@@ -154,9 +128,12 @@ class _RegisterViewState extends State<RegisterView> {
                             repeatPasswordController.text == "" ||
                             passwordController.text !=
                                 repeatPasswordController.text) {
-                          setState(() {
-                            error = "Thông tin bạn nhập chưa chính xác !";
-                          });
+                          var dialog = const CustomAlertDialog(
+                              title: "Notice",
+                              message: "Vui lòng nhập đầy đủ thông tin!");
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext context) => dialog);
                         } else {
                           signUpUser();
                           
