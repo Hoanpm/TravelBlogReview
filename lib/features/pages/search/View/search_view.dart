@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:travelblog/color/color.dart';
+import 'package:travelblog/features/pages/search/widget/search_history.dart';
 
 class SearchView extends StatefulWidget {
   
@@ -55,48 +56,24 @@ class _SearchViewState extends State<SearchView> {
                 '   Tìm kiếm gần đây',
                 style: TextStyle(
                   fontSize: 25,
+                  fontFamily: "noto",
                   fontWeight: FontWeight.bold,
                 ),
               ),
               Padding(
-                padding: EdgeInsets.fromLTRB( 30 , 10, 10, 0), // Đặt padding cho Column
+                padding: EdgeInsets.fromLTRB( 30 , 30, 10, 0), // Đặt padding cho Column
                 child: Column(
                   children: <Widget>[
-                    Text(
-                      'Tìm kiếm 1',
-                      style: TextStyle(
-                        fontSize: 18
-                      ),
-                    ),
-                    SizedBox(height: 20,),
-                    Text(
-                      'Tìm kiếm 2',
-                      style: TextStyle(
-                        fontSize: 18
-                      ),
-                    ),
-                    SizedBox(height: 20,),
-                    Text(
-                      'Tìm kiếm 3',
-                      style: TextStyle(
-                        fontSize: 18
-                      ),
-                    ),
-                    SizedBox(height: 20,),
-                    Text(
-                      'Tìm kiếm 4',
-                      style: TextStyle(
-                        fontSize: 18
-                      ),
-                    ),
-                    SizedBox(height: 20,),
-                    Text(
-                      'Tìm kiếm 5',
-                      style: TextStyle(
-                        fontSize: 18
-                      ),
-                    ),
-                    SizedBox(height: 20,),
+                    SearchText(inputString: "Tìm kiếm 1"),
+                    SizedBox(height: 25,),
+                    SearchText(inputString: "Tìm kiếm 2"),
+                    SizedBox(height: 25,),
+                    SearchText(inputString: "Tìm kiếm 3"),
+                    SizedBox(height: 25,),
+                    SearchText(inputString: "Tìm kiếm 4"),
+                    SizedBox(height: 25,),
+                    SearchText(inputString: "Tìm kiếm 5"),
+                    SizedBox(height: 25,),
                    
                   ],
                 ),

@@ -36,7 +36,8 @@ class LoginViewState extends State<LoginView> {
         email: emailController.text,
         password: passwordController.text,
       );
-
+      if (!context.mounted) return;
+      Navigator.push(context, HomeView.route());
     } on AuthException catch (e) {
       print(e);
       setState(() {
@@ -112,8 +113,6 @@ class LoginViewState extends State<LoginView> {
                         if (emailController.text != "" ||
                             passwordController.text != "") {
                           signIn();
-                          if (!context.mounted) return;
-                          Navigator.push(context, HomeView.route());
                         } else {
                           setState(() {
                             error = "Thông tin đăng nhập chưa chính xác !";

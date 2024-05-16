@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-//import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:travelblog/features/pages/reviewblog/blog_detail.dart';
 
 class BlogCard extends StatelessWidget {
   final String imageUrl;
@@ -17,88 +17,123 @@ class BlogCard extends StatelessWidget {
     required this.textContent,
     required this.time,
     required this.like,
-    required this.comment, required this.fullName, required this.userName,
+    required this.comment,
+    required this.fullName,
+    required this.userName,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      color: Colors.white,
-      margin: EdgeInsets.all(10),
-      child: Padding(
-          padding: EdgeInsets.all(10),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  CircleAvatar(
-                    backgroundImage: Image.network(imageUrl).image,
-                    radius: 35,
-                  ),
-                  SizedBox(width: 10),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Text(
-                            fullName,
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          SizedBox(width: 5),
-                          Text(
-                            "@$userName",
-                            style: TextStyle(color: Colors.grey),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 5),
-                      Text(
-                        time,
-                        style: TextStyle(color: Colors.grey),
-                      ),
-                      SizedBox(height: 5),
-                      SizedBox(
-                        height: 30,
-                      )
-                    ],
-                  ),
+    return Container(
+      height: 250,
+      margin: EdgeInsets.all(20),
+      child: Stack(
+        children: <Widget>[
+          Container(
+            height: 210,
+            padding: EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: NetworkImage(
+                    "https://hoanghamobile.com/tin-tuc/wp-content/webp-express/webp-images/uploads/2023/07/anh-phong-canh-dep-7.jpg.webp"),
+                fit: BoxFit.cover,
+              ),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    CircleAvatar(
+                      backgroundImage: Image.network(imageUrl).image,
+                      radius: 20,
+                    ),
+                    SizedBox(width: 10),
+                    Text(
+                      fullName,
+                      style: TextStyle(
+                          fontWeight: FontWeight.w900,
+                          color: Colors.white),
+                    ),
+                    SizedBox(width: 5),
+                    Text(
+                      "",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 40),
+                Text(
+                  time,
+                  style: TextStyle(
+                      color: Colors.grey, fontWeight: FontWeight.w500),
+                ),
+                SizedBox(height: 5),
+                Text(
+                  textContent,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold),
+                ),  
+              ],
+            )
+          ),
+          
+          Positioned(
+            top: 185,
+            left: 20,
+            child: Container(
+              width: 180,
+              height: 50,
+              padding: EdgeInsets.all(5),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(15),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.5),
+                    spreadRadius: 0.25,
+                    blurRadius: 10,
+                    offset: Offset(0, 2),
+                  )
                 ],
               ),
-              Text(
-                textContent,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
-              SizedBox(
-                height: 30,
-              ),
-              Row(
+              child: Row(
                 children: [
-                  Expanded(child: Row(
-                    children: [
-                      Icon(Icons.thumb_up),
-                      SizedBox(width: 5),
-                      Text('$like'),
-                    ],
-                    )
+                  IconButton(
+                    iconSize: 20,
+                    onPressed: () {}, 
+                    icon: Icon(Icons.thumb_up)
                   ),
-                  
-                  Expanded(child: Row(
-                    children: [
-                      Icon(Icons.comment),
-                      SizedBox(width: 5),
-                      Text('$comment'),
-                    ],
-                    )
+                  Text(
+                    "$like",
+                    style: TextStyle(
+                      fontSize: 14
+                    ),
                   ),
-                  
+                  IconButton(
+                    iconSize: 20,
+                    onPressed: () {}, 
+                    icon: Icon(Icons.comment)
+                  ),
+                  Text(
+                    "$comment",
+                    style: TextStyle(
+                      fontSize: 14
+                    ), 
+                  )
                 ],
-              )
-            ],
-          )),
+                
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

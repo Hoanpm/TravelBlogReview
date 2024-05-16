@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:travelblog/color/color.dart';
 import 'package:travelblog/features/pages/reviewblog/blog_list.dart';
 
 class UserProfile extends ConsumerWidget {
@@ -8,10 +7,11 @@ class UserProfile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Column(
+    return Column(  
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(
+          Container(
+            
             height: 400,
             child: Stack(
               children: [
@@ -22,14 +22,18 @@ class UserProfile extends ConsumerWidget {
                   ),
                   height: 230,
                   child: 
-                    Image.network("https://static.topcv.vn/company_logos/XNmAj34dlkgUnHAumzR8wV1glpK2vUGM_1644916299____dd352cc1e6550dc1569aae2ab8d87282.png", fit: BoxFit.cover,)
+                    Image.network("https://i1-dulich.vnecdn.net/2021/10/23/49483719-10115915-image-a-11-1634848573982.jpg?w=1200&h=0&q=100&dpr=2&fit=crop&s=x2JS8CGE41SJMc07-GfXPw", fit: BoxFit.cover,)
                 ),
-                const Positioned(
+                 Positioned(
                   bottom: 120,
                   left: 20,
                   child: CircleAvatar(
-                    backgroundImage: NetworkImage("https://ca.slack-edge.com/T02QFU9TCTD-U064XJS8UGH-3b52a500b766-512"),
-                    radius: 80
+                    backgroundColor: Colors.white,
+                    radius: 75,
+                    child: CircleAvatar(
+                      radius: 72,
+                      backgroundImage: NetworkImage("https://ca.slack-edge.com/T02QFU9TCTD-U064XJS8UGH-3b52a500b766-512"),
+                    ),
                   )
                 ),
                 const Positioned(
@@ -48,15 +52,18 @@ class UserProfile extends ConsumerWidget {
                       ),
                       Text(
                         "@vuachichcho",
-                        style: TextStyle(color: Colors.grey, fontSize: 16),
+                        style: TextStyle(
+                          color: Colors.grey, fontSize: 16,
+                          fontFamily: "noto"
+                          ),
                       ),
                       SizedBox(height: 10,),
                       Text(
                         "I love chichcho, toi có một con mèo biết bucu",
                         style: TextStyle(
-                          fontFamily: 'arial',
+                          fontFamily: 'noto',
                           fontSize: 16,
-                          fontWeight: FontWeight.w500,
+                          fontWeight: FontWeight.w400,
                           ),
                       )
                     ],
@@ -66,7 +73,7 @@ class UserProfile extends ConsumerWidget {
             ),
           ),
           SizedBox(height: 30,),
-          Text(" Bài viết của Sun Slave:", style: TextStyle(
+          Text("    Bài viết của Sun Slave:", style: TextStyle(
             fontSize: 20,
             fontFamily: "noto",
             fontWeight: FontWeight.bold,
