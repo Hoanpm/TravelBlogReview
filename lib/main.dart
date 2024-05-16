@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:travelblog/features/auth/view/getting_start_view.dart';
-import 'package:travelblog/features/auth/view/login_view.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 Future<void> main() async {
@@ -20,6 +19,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
@@ -29,4 +29,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
