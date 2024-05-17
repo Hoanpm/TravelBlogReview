@@ -64,6 +64,7 @@ class UserProfile extends ConsumerWidget {
                             fontFamily: 'noto',
                             fontSize: 16,
                             fontWeight: FontWeight.w400,
+                            overflow: TextOverflow.visible
                             ),
                         )
                       ],
