@@ -35,8 +35,9 @@ class BlogCard extends StatelessWidget {
             decoration: BoxDecoration(
               image: DecorationImage(
                 image: NetworkImage(
-                    "https://hoanghamobile.com/tin-tuc/wp-content/webp-express/webp-images/uploads/2023/07/anh-phong-canh-dep-7.jpg.webp"),
-                fit: BoxFit.cover,
+                  imageUrl,
+                ),
+                fit: BoxFit.cover
               ),
               borderRadius: BorderRadius.circular(20),
             ),
@@ -47,7 +48,7 @@ class BlogCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     CircleAvatar(
-                      backgroundImage: Image.network(imageUrl).image,
+                      backgroundImage: Image.network("https://hoanghamobile.com/tin-tuc/wp-content/webp-express/webp-images/uploads/2023/07/anh-phong-canh-dep-7.jpg.webp").image,
                       radius: 20,
                     ),
                     SizedBox(width: 10),
