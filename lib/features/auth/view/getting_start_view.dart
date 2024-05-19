@@ -5,6 +5,8 @@ import 'package:travelblog/features/auth/view/register_view.dart';
 import 'package:travelblog/features/pages/home/view/home_view.dart';
 
 class StartView extends StatefulWidget {
+  static route() =>
+      MaterialPageRoute(builder: (context) => const StartView());
   const StartView({super.key});
 
   @override
@@ -41,7 +43,8 @@ class _StartViewState extends State<StartView> {
                 const SizedBox(height: 50,),
                 TextButton(
                   onPressed: () {
-                    Navigator.push(context, HomeView.route());
+                    Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
+                    HomeView()), (Route<dynamic> route) => false);
                   },
                 child: const Text(
                   'Trải nghiệm mà không cần đăng nhập',

@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/widgets.dart';
+import 'package:intl/intl.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:travelblog/color/color.dart';
+import 'package:travelblog/features/auth/widget/custom_alert_box.dart';
 import 'package:travelblog/features/pages/filter/widget/dropdown_component1.dart';
+import 'package:travelblog/features/pages/reviewblog/blog_card.dart';
 import 'package:travelblog/features/pages/reviewblog/blog_list.dart';
+import 'package:travelblog/features/pages/writeblog/widget/dropdown_component.dart';
+import 'package:travelblog/provider/supabase_manager.dart';
 
 final supabase = Supabase.instance.client;
 
@@ -18,16 +24,51 @@ class _FilterViewState extends State<FilterView> {
   bool _isAppBarVisible = true;
   late ScrollController _scrollController;
   double _scrollPosition = 0;
+  SupabaseManager supabaseManager = SupabaseManager();
+  List<String> cityList = [];
+  String? selectedCity = "";
+  List<String> districtSet = [];
+  String? selectedDistrict = "";
+  List<Map<String, dynamic>> filteredPost = [];
+  final GlobalKey<CustomDropDown2State> districtDropdownKey =
+      GlobalKey<CustomDropDown2State>();
+  final GlobalKey<CustomDropDown2State> cityDropdownKey =
+      GlobalKey<CustomDropDown2State>();
+  final GlobalKey<CustomDropDown2State> categoryDropdownKey =
+      GlobalKey<CustomDropDown2State>();
+  String? category = "";
   List<String> travelTypes = [
     'Ẩm Thực',
     'Tham quan',
   ];
+  bool isFilterd = false;
+
+  getCityList() async {
+    var cities = await supabaseManager.getCityList();
+    setState(() {
+      cities.map((item) => cityList.add(item['name'] as String)).toList();
+    });
+  }
+
+  getDistrictList() async {
+    var districts = await supabaseManager
+        .getDistrictList(cityList.indexOf(selectedCity!) + 1);
+    setState(() {
+      districtDropdownKey.currentState?.setSelectedValue();
+      districtSet.clear();
+      districts.forEach((item) {
+        districtSet.add(item['name'] as String);
+      });
+    });
+  }
 
   @override
   void initState() {
     super.initState();
     _scrollController = ScrollController();
     _scrollController.addListener(_scrollListener);
+    getCityList();
+    getDistrictList();
   }
 
   void _scrollListener() {
@@ -38,6 +79,25 @@ class _FilterViewState extends State<FilterView> {
       } else {
         _isAppBarVisible = true;
       }
+    });
+  }
+
+  handleGetFilterdPost() async {
+    var posts = await supabaseManager.getPostBasedOnFilter(
+        travelTypes.indexOf(category!) + 1,
+        cityList.indexOf(selectedCity!) + 1,
+        districtSet.indexOf(selectedDistrict!) + 1);
+
+    setState(() {
+      filteredPost = posts;
+      isFilterd = true;
+      districtDropdownKey.currentState?.setSelectedValue();
+      cityDropdownKey.currentState?.setSelectedValue();
+      categoryDropdownKey.currentState?.setSelectedValue();
+      selectedCity = "";
+      selectedDistrict = "";
+      category = "";
+      districtSet.clear();
     });
   }
 
@@ -67,8 +127,15 @@ class _FilterViewState extends State<FilterView> {
                           borderRadius: BorderRadius.circular(30)),
                       child: Center(
                         child: CustomDropDown2(
-                            items: travelTypes,
-                            hintText: "Chọn loại hình du lịch"),
+                          key: categoryDropdownKey,
+                          items: travelTypes,
+                          hintText: "Chọn loại hình du lịch",
+                          onChanged: (String? value) {
+                            setState(() {
+                              category = value;
+                            });
+                          },
+                        ),
                       ),
                     ),
                     SizedBox(
@@ -85,8 +152,16 @@ class _FilterViewState extends State<FilterView> {
                           borderRadius: BorderRadius.circular(30)),
                       child: Center(
                         child: CustomDropDown2(
-                            items: travelTypes,
-                            hintText: "Chọn tỉnh thành du lịch"),
+                          key: cityDropdownKey,
+                          items: cityList,
+                          hintText: "Chọn tỉnh thành du lịch",
+                          onChanged: (String? value) {
+                            setState(() {
+                              selectedCity = value;
+                              getDistrictList();
+                            });
+                          },
+                        ),
                       ),
                     ),
                     SizedBox(
@@ -103,34 +178,56 @@ class _FilterViewState extends State<FilterView> {
                           borderRadius: BorderRadius.circular(30)),
                       child: Center(
                         child: CustomDropDown2(
-                            items: travelTypes,
-                            hintText: "Chọn quận huyện du lịch"),
+                          key: districtDropdownKey,
+                          items: districtSet,
+                          hintText: "Chọn quận huyện du lịch",
+                          onChanged: (String? value) {
+                            setState(() {
+                              selectedDistrict = value;
+                            });
+                          },
+                        ),
                       ),
                     ),
                     SizedBox(
                       height: 10,
                     ),
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        SizedBox(
-                          width: 290,
-                        ),
-                        ElevatedButton(
-                          onPressed: () {},
-                          style: ElevatedButton.styleFrom(
-                            minimumSize: const Size(100, 45),
-                            backgroundColor: PJcolor.buttonColor,
-                          ),
-                          child: Text(
-                            "Lọc",
-                            style: const TextStyle(
-                              color: Colors.white, // Màu văn bản
-                              fontFamily: "noto",
-                              fontSize: 18, // Cỡ chữ
-                              fontWeight: FontWeight.bold, // Độ đậm của chữ
-                            ),
-                          ),
-                        ),
+                        Container(
+                          margin: const EdgeInsets.only(right: 20),
+                          child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  fixedSize: const Size(100, 45),
+                                  backgroundColor: PJcolor.buttonColor,
+                                  foregroundColor: Colors.white),
+                              onPressed: () {
+                                if (category == "" &&
+                                    selectedCity == "" &&
+                                    selectedDistrict == "") {
+                                  var dialog = const CustomAlertDialog(
+                                      title: "Notice",
+                                      message:
+                                          "Bạn cần chọn ít nhất một nội dung để lọc !");
+                                  showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) =>
+                                          dialog);
+                                } else {
+                                  handleGetFilterdPost();
+                                }
+                              },
+                              child: Center(
+                                child: Text(
+                                  "Lọc",
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontFamily: 'noto',
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              )),
+                        )
                       ],
                     )
                   ],
@@ -156,7 +253,27 @@ class _FilterViewState extends State<FilterView> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              BlogList()
+              filteredPost.isEmpty && isFilterd == true
+                  ? Center(
+                      child: Container(
+                          margin: const EdgeInsets.only(top: 20),
+                          child: Text("Không tìm thấy kết quả phù hợp !")),
+                    )
+                  : Column(
+                      children: filteredPost.map<Widget>((post) {
+                        return BlogCard(
+                          imageUrl: post['image_link'],
+                          textContent: post['title'],
+                          time: DateFormat('yyyy-MM-dd HH:mm:ss')
+                              .format(DateTime.parse(post['created_at'])),
+                          like: post['like'],
+                          comment: 0,
+                          fullName: post['user_fullName'],
+                          imageLink: post['user_image_link'],
+                          isEditable: false, editNavigate: () {},
+                        );
+                      }).toList(),
+                    ),
             ],
           ),
         ),
