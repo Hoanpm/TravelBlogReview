@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:travelblog/features/pages/showblogdetail/widget/comment_component.dart.dart';
 
 class CommentList extends StatefulWidget {
-  const CommentList({super.key});
+  final List<Map<String, dynamic>> cmtList;
+  const CommentList({super.key, required this.cmtList});
 
   @override
   State<CommentList> createState() => _CommentListState();
@@ -14,10 +15,10 @@ class _CommentListState extends State<CommentList> {
     return ListView.builder(
       shrinkWrap: true,
       physics: NeverScrollableScrollPhysics(),
-      itemCount: 10,
+      itemCount: widget.cmtList.length,
       itemBuilder: (context, index) {
         return ListTile(
-          title: CommentComponent(),
+          title: CommentComponent(cmt: widget.cmtList[index],),
         );
       },
     );
