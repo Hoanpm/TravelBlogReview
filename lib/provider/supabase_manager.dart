@@ -37,6 +37,7 @@ class SupabaseManager {
         var user = userRes[0];
         post['user_image_link'] = user['image_link'];
         post['user_fullName'] = user['fullName'];
+        post['user_username'] = user['username'];
 
         newPostList.add(post);
       }
@@ -62,6 +63,7 @@ class SupabaseManager {
         var user = userRes[0];
         post['user_fullName'] = user['fullName'];
         post['user_image_link'] = user['image_link'];
+        post['user_username'] = user['username'];
 
         newPostList.add(post);
       }
@@ -102,6 +104,7 @@ class SupabaseManager {
           final userRes = await getUserInfo(post['user_id'] as String);
           var user = userRes[0];
           post['user_image_link'] = user['image_link'];
+          post['user_username'] = user['username'];
           post['user_fullName'] = user['fullName'];
 
           newPostList.add(post);
@@ -120,6 +123,7 @@ class SupabaseManager {
         for (var post in postList) {
           final userRes = await getUserInfo(post['user_id'] as String);
           var user = userRes[0];
+          post['user_username'] = user['username'];
           post['user_image_link'] = user['image_link'];
           post['user_fullName'] = user['fullName'];
 
@@ -140,6 +144,7 @@ class SupabaseManager {
         for (var post in postList) {
           final userRes = await getUserInfo(post['user_id'] as String);
           var user = userRes[0];
+          post['user_username'] = user['username'];
           post['user_image_link'] = user['image_link'];
           post['user_fullName'] = user['fullName'];
 
@@ -160,6 +165,7 @@ class SupabaseManager {
           final userRes = await getUserInfo(post['user_id'] as String);
           var user = userRes[0];
           post['user_image_link'] = user['image_link'];
+          post['user_username'] = user['username'];
           post['user_fullName'] = user['fullName'];
 
           newPostList.add(post);
@@ -181,6 +187,7 @@ class SupabaseManager {
           var user = userRes[0];
           post['user_image_link'] = user['image_link'];
           post['user_fullName'] = user['fullName'];
+          post['user_username'] = user['username'];
 
           newPostList.add(post);
         }
@@ -208,6 +215,7 @@ class SupabaseManager {
         var user = userRes[0];
         post['user_image_link'] = user['image_link'];
         post['user_fullName'] = user['fullName'];
+        post['user_username'] = user['username'];
 
         newPostList.add(post);
       }
@@ -265,6 +273,76 @@ class SupabaseManager {
           .eq('user_id', userId!);
 
       return searchHistoryList;
+    } catch (error) {
+      print(error);
+    }
+  }
+
+  Future getPostLikeNumber(int postId) async {
+    try {
+      final likeNumber = await Supabase.instance.client
+          .from('like')
+          .select()
+          .eq('post_id', postId)
+          .count(CountOption.exact);
+      return likeNumber;
+    } catch (error) {
+      print(error);
+    }
+  }
+
+  Future checkUserLiked(String? userId, int postId) async {
+    try {
+      final isLiked = await Supabase.instance.client
+          .from('like')
+          .select()
+          .eq('user_id', userId!)
+          .eq('post_id', postId);
+
+      if (isLiked.isEmpty) {
+        return false;
+      } else {
+        return true;
+      }
+    } catch (error) {
+      print(error);
+    }
+  }
+
+  Future getPostCommentNumber(int postId) async {
+    try {
+      final commentNumber = await Supabase.instance.client
+          .from('comment')
+          .select()
+          .eq('post_id', postId)
+          .count(CountOption.exact);
+      return commentNumber;
+    } catch (error) {
+      print(error);
+    }
+  }
+
+  Future getPostCommentList(int postId) async {
+    try {
+      final commentList = await Supabase.instance.client
+          .from('comment')
+          .select()
+          .eq('post_id', postId)
+          .order('id', ascending: true);
+
+      List<Map<String, dynamic>> newCommentList = [];
+
+      for (var cmt in commentList) {
+        final userRes = await getUserInfo(cmt['user_id'] as String);
+        var user = userRes[0];
+        cmt['user_image_link'] = user['image_link'];
+        cmt['user_fullName'] = user['fullName'];
+        cmt['user_username'] = user['username'];
+
+        newCommentList.add(cmt);
+      }
+
+      return newCommentList;
     } catch (error) {
       print(error);
     }
