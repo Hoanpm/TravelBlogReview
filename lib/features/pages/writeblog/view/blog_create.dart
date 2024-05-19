@@ -23,6 +23,7 @@ class BlogCreate extends StatefulWidget {
 class _BlogCreateState extends State<BlogCreate> {
   final location = TextEditingController();
   final title = TextEditingController();
+  final mapLink = TextEditingController();
   final content = TextEditingController();
   SupabaseManager supabaseManager = SupabaseManager();
   List<String> cityList = [];
@@ -34,8 +35,6 @@ class _BlogCreateState extends State<BlogCreate> {
       GlobalKey<CustomDropdownState>();
   String? _imageUrl = "";
   String? _videoUrl = "";
-  String? ggLink = "";
-  TextEditingController _textEditingController = TextEditingController();
   List<String> travelTypes = [
     'Ẩm Thực',
     'Tham quan',
@@ -84,7 +83,7 @@ class _BlogCreateState extends State<BlogCreate> {
         'content': content.text,
         'city_id': cityList.indexOf(selectedCity!) + 1,
         'district_id': districtSet.indexOf(selectedDistrict!) + 1,
-        'map_link': ggLink,
+        'map_link': mapLink.text,
         'image_link': _imageUrl,
         'video_link': _videoUrl ?? ""
       });
@@ -154,15 +153,13 @@ class _BlogCreateState extends State<BlogCreate> {
                                   title: Text("Nhập link google map"),
                                   surfaceTintColor: Colors.white,
                                   content: TextField(
-                                    
-                                    controller: _textEditingController,
+                                    controller: mapLink,
                                     decoration: InputDecoration(
                                       hintText: "Link...",
                                     ),
                                   ),
                                   actions: <Widget>[
                                     ElevatedButton(
-                                      
                                       onPressed: () {
                                         Navigator.of(context).pop();
                                       },
@@ -402,7 +399,8 @@ class _BlogCreateState extends State<BlogCreate> {
                           selectedCity == "" ||
                           selectedDistrict == "" ||
                           category == "" ||
-                          _imageUrl == "") {
+                          _imageUrl == "" ||
+                          mapLink.text == "") {
                         var dialog = const CustomAlertDialog(
                             title: "Notice",
                             message: "Bạn cần chọn hết nội dung để đăng bài !");

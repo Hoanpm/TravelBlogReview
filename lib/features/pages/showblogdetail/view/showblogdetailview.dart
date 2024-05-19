@@ -6,6 +6,7 @@ import "package:travelblog/color/color.dart";
 import "package:travelblog/features/auth/widget/custom_alert_box.dart";
 import "package:travelblog/features/pages/showblogdetail/widget/comment_list.dart";
 import "package:travelblog/provider/supabase_manager.dart";
+import "package:url_launcher/url_launcher.dart";
 
 final supabase = Supabase.instance.client;
 
@@ -29,6 +30,14 @@ class _ShowDetailState extends State<ShowDetail> {
   int cmtNumb = 0;
   bool isLiked = false;
   List<Map<String, dynamic>> cmtList = [];
+
+  void _launchUrl() async {
+    if (await canLaunchUrl(Uri.parse(widget.post['map_link']))) {
+      await launchUrl(Uri.parse(widget.post['map_link']), mode: LaunchMode.externalApplication);
+    } else {
+      print('cannot launch');
+    }
+  }
 
   getUserInfo() async {
     final useri4 =
@@ -144,63 +153,84 @@ class _ShowDetailState extends State<ShowDetail> {
         flexibleSpace: FlexibleSpaceBar(
           background: Container(
             padding: EdgeInsets.only(left: 40, top: 16),
-            child: Column(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                SizedBox(height: 25),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                Column(
                   children: [
-                    CircleAvatar(
-                      backgroundImage:
-                          NetworkImage(widget.post['user_image_link']),
-                      radius: 25,
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Column(
+                    SizedBox(height: 25),
+                    Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SizedBox(
-                          height: 5,
+                        CircleAvatar(
+                          backgroundImage:
+                              NetworkImage(widget.post['user_image_link']),
+                          radius: 25,
                         ),
-                        Row(
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              widget.post['user_fullName'],
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 14,
-                                  fontFamily: "noto"),
+                            SizedBox(
+                              height: 5,
                             ),
-                            SizedBox(width: 5),
+                            Row(
+                              children: [
+                                Text(
+                                  widget.post['user_fullName'],
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14,
+                                      fontFamily: "noto"),
+                                ),
+                                SizedBox(width: 5),
+                                Text(
+                                  "@${widget.post['user_username']}",
+                                  style: TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: 14,
+                                      fontFamily: "noto"),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 5),
                             Text(
-                              "@${widget.post['user_username']}",
-                              style: TextStyle(
-                                  color: Colors.grey,
-                                  fontSize: 14,
-                                  fontFamily: "noto"),
+                              DateFormat('yyyy-MM-dd').format(
+                                  DateTime.parse(widget.post['created_at'])),
+                              style:
+                                  TextStyle(color: Colors.grey, fontFamily: "noto"),
                             ),
                           ],
-                        ),
-                        SizedBox(height: 5),
-                        Text(
-                          DateFormat('yyyy-MM-dd').format(
-                              DateTime.parse(widget.post['created_at'])),
-                          style:
-                              TextStyle(color: Colors.grey, fontFamily: "noto"),
                         ),
                       ],
                     ),
                   ],
                 ),
-              ],
+                Container(
+                  margin: EdgeInsets.only(right: 15, top: 10),
+                  width: 50,
+                  height: 50,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      padding: EdgeInsets.all(0),
+                      backgroundColor: PJcolor.buttonColor,
+                      foregroundColor: Colors.white
+                    ),
+                    onPressed: _launchUrl,
+                    child: Icon(
+                      Icons.location_on_sharp,
+                    ),
+                  ),
+                )
+              ]
             ),
           ),
         ),
       ),
       body: SingleChildScrollView(
-        child: Container(
+          child: Container(
         padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -313,82 +343,84 @@ class _ShowDetailState extends State<ShowDetail> {
         ),
       )),
       bottomSheet: Container(
-              height: 70,
-              width: MediaQuery.of(context).size.width,
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(color: Colors.white, boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.8),
-                  spreadRadius: 0.25,
-                  blurRadius: 3,
-                  offset: Offset(0, 2),
-                )
-              ]),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    width: MediaQuery.of(context).size.width - 70,
-                    padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                    height: 40,
-                    decoration: BoxDecoration(
-                      color: PJcolor.primaryColor,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: TextFormField(
-                      controller: commentText,
-                      decoration: InputDecoration(
-                          border: InputBorder.none,
-                          contentPadding: EdgeInsets.fromLTRB(15, 0, 0, 10),
-                          hintText: user['fullName'] != "" ? 'Bình luận dưới tên ${user['fullName']}' : "Bình luận ...",
-                          hintStyle: TextStyle(
-                            fontSize: 18,
-                            color: PJcolor.primaryColor2,
-                          )),
-                    ),
-                  ),
-                  Container(
-                    width: 40,
-                    height: 40,
-                    child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            padding: EdgeInsets.all(0),
-                            fixedSize: const Size(40, 40),
-                            backgroundColor: PJcolor.buttonColor,
-                            foregroundColor: Colors.white),
-                        onPressed: () async {
-                          if (supabase.auth.currentUser == null) {
-                            var dialog = const CustomAlertDialog(
-                              title: "Notice",
-                              message:
-                                  "Bạn cần đăng nhập để sử dụng chức năng này !");
-                              showDialog(
-                                context: context,
-                                builder: (BuildContext context) => dialog);
-                          } else {
-                            if (commentText.text != "") {
-                              await supabase.from('comment').insert({
-                                'user_id': user['id'],
-                                'post_id': widget.post['id'],
-                                'content': commentText.text
-                              });
-
-                              setState(() {
-                                getPostCommentList();
-                                getPostCommentNumber();
-                                commentText.text = "";
-                              });
-                            }
-                          }
-                        },
-                        child: Icon(
-                          Icons.send,
-                          size: 20,
-                        )),
-                  )
-                ],
+        height: 70,
+        width: MediaQuery.of(context).size.width,
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(color: Colors.white, boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.8),
+            spreadRadius: 0.25,
+            blurRadius: 3,
+            offset: Offset(0, 2),
+          )
+        ]),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Container(
+              width: MediaQuery.of(context).size.width - 70,
+              padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+              height: 40,
+              decoration: BoxDecoration(
+                color: PJcolor.primaryColor,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: TextFormField(
+                controller: commentText,
+                decoration: InputDecoration(
+                    border: InputBorder.none,
+                    contentPadding: EdgeInsets.fromLTRB(15, 0, 0, 10),
+                    hintText: user['fullName'] != ""
+                        ? 'Bình luận dưới tên ${user['fullName']}'
+                        : "Bình luận ...",
+                    hintStyle: TextStyle(
+                      fontSize: 18,
+                      color: PJcolor.primaryColor2,
+                    )),
               ),
             ),
+            Container(
+              width: 40,
+              height: 40,
+              child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      padding: EdgeInsets.all(0),
+                      fixedSize: const Size(40, 40),
+                      backgroundColor: PJcolor.buttonColor,
+                      foregroundColor: Colors.white),
+                  onPressed: () async {
+                    if (supabase.auth.currentUser == null) {
+                      var dialog = const CustomAlertDialog(
+                          title: "Notice",
+                          message:
+                              "Bạn cần đăng nhập để sử dụng chức năng này !");
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) => dialog);
+                    } else {
+                      if (commentText.text != "") {
+                        await supabase.from('comment').insert({
+                          'user_id': user['id'],
+                          'post_id': widget.post['id'],
+                          'content': commentText.text
+                        });
+
+                        setState(() {
+                          getPostCommentList();
+                          getPostCommentNumber();
+                          commentText.text = "";
+                        });
+                      }
+                    }
+                  },
+                  child: Icon(
+                    Icons.send,
+                    size: 20,
+                  )),
+            )
+          ],
+        ),
+      ),
     );
   }
 }
