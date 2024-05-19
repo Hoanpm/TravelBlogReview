@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:travelblog/color/color.dart';
 import 'package:travelblog/features/pages/filter/view/filter_view.dart';
-import 'package:travelblog/features/pages/profile/view/edit_profile.dart';
 import 'package:travelblog/features/pages/profile/view/user_profile_view.dart';
 import 'package:travelblog/features/pages/reviewblog/blog_list.dart';
 import 'package:travelblog/features/pages/search/View/search_view.dart';
@@ -36,6 +35,33 @@ class _HomeViewState extends State<HomeView> {
         automaticallyImplyLeading: false,
         toolbarHeight: 50,
         backgroundColor: Colors.white,
+        title: Container(
+          width: 130,
+          height: 40,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            color: PJcolor.buttonColor,
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.airplane_ticket,
+                color: Colors.white,
+              ),
+              SizedBox(width: 5,),
+              Text(
+                "Travel",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: "noto"
+                ),
+              ),
+            ],
+          ),
+        ),
         actions: <Widget>[
           Container(
             width: 40,
