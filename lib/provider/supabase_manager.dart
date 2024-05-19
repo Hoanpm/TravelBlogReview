@@ -226,11 +226,11 @@ class SupabaseManager {
           .eq('user_id', userId!)
           .eq('searchContent', search);
 
-      if (existingSearch != []) {
-         await Supabase.instance.client
-          .from('search_history')
-          .delete()
-          .eq('id', existingSearch[0]['id']);
+      if (existingSearch.isNotEmpty) {
+        await Supabase.instance.client
+            .from('search_history')
+            .delete()
+            .eq('id', existingSearch[0]['id']);
       }
 
       var search_history = await Supabase.instance.client

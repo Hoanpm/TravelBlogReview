@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:travelblog/features/auth/view/getting_start_view.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:travelblog/features/pages/showblogdetail/view/showblogdetailview.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,7 +26,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const StartView(),
+      home: const ShowDetail(),
     );
   }
 }
