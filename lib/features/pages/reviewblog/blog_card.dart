@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:travelblog/color/color.dart';
 import 'package:travelblog/features/pages/reviewblog/blog_detail.dart';
 
 class BlogCard extends StatelessWidget {
@@ -9,7 +10,9 @@ class BlogCard extends StatelessWidget {
   final int like;
   final int comment;
   final String fullName;
-  final String userName;
+  final String imageLink;
+  final bool isEditable;
+  final VoidCallback editNavigate;
 
   const BlogCard({
     super.key,
@@ -19,7 +22,8 @@ class BlogCard extends StatelessWidget {
     required this.like,
     required this.comment,
     required this.fullName,
-    required this.userName,
+    required this.imageLink,
+    required this.isEditable, required this.editNavigate,
   });
 
   @override
@@ -30,61 +34,57 @@ class BlogCard extends StatelessWidget {
       child: Stack(
         children: <Widget>[
           Container(
-            height: 210,
-            padding: EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: NetworkImage(
-                  imageUrl,
-                ),
-                fit: BoxFit.cover
+              height: 210,
+              padding: EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                    image: NetworkImage(
+                      imageUrl,
+                    ),
+                    fit: BoxFit.cover),
+                borderRadius: BorderRadius.circular(20),
               ),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    CircleAvatar(
-                      backgroundImage: Image.network("https://hoanghamobile.com/tin-tuc/wp-content/webp-express/webp-images/uploads/2023/07/anh-phong-canh-dep-7.jpg.webp").image,
-                      radius: 20,
-                    ),
-                    SizedBox(width: 10),
-                    Text(
-                      fullName,
-                      style: TextStyle(
-                          fontWeight: FontWeight.w900,
-                          color: Colors.white),
-                    ),
-                    SizedBox(width: 5),
-                    Text(
-                      "",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 40),
-                Text(
-                  time,
-                  style: TextStyle(
-                      color: Colors.grey, fontWeight: FontWeight.w500),
-                ),
-                SizedBox(height: 5),
-                Text(
-                  textContent,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold),
-                ),  
-              ],
-            )
-          ),
-          
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      CircleAvatar(
+                        backgroundImage: Image.network(imageLink).image,
+                        radius: 20,
+                      ),
+                      SizedBox(width: 10),
+                      Text(
+                        fullName,
+                        style: TextStyle(
+                            fontWeight: FontWeight.w900, color: Colors.white),
+                      ),
+                      SizedBox(width: 5),
+                      Text(
+                        "",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 40),
+                  Text(
+                    time,
+                    style: TextStyle(
+                        color: Colors.grey, fontWeight: FontWeight.w500),
+                  ),
+                  SizedBox(height: 5),
+                  Text(
+                    textContent,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ],
+              )),
           Positioned(
             top: 185,
             left: 20,
@@ -107,32 +107,38 @@ class BlogCard extends StatelessWidget {
               child: Row(
                 children: [
                   IconButton(
-                    iconSize: 20,
-                    onPressed: () {}, 
-                    icon: Icon(Icons.thumb_up)
-                  ),
+                      iconSize: 20,
+                      onPressed: () {},
+                      icon: Icon(Icons.thumb_up)),
                   Text(
                     "$like",
-                    style: TextStyle(
-                      fontSize: 14
-                    ),
+                    style: TextStyle(fontSize: 14),
                   ),
                   IconButton(
-                    iconSize: 20,
-                    onPressed: () {}, 
-                    icon: Icon(Icons.comment)
-                  ),
+                      iconSize: 20,
+                      onPressed: () {},
+                      icon: Icon(Icons.comment)),
                   Text(
                     "$comment",
-                    style: TextStyle(
-                      fontSize: 14
-                    ), 
+                    style: TextStyle(fontSize: 14),
                   )
                 ],
-                
               ),
             ),
           ),
+          isEditable == false
+              ? Container()
+              : Positioned(
+                  top: 16,
+                  right: 10,
+                  child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: PJcolor.buttonColor,
+                          foregroundColor: Colors.white),
+                      onPressed: editNavigate,
+                      child: Center(
+                        child: Text("Chỉnh sửa"),
+                      )))
         ],
       ),
     );
