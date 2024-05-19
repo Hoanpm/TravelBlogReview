@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:travelblog/features/pages/reviewblog/blog_card.dart';
+import 'package:travelblog/features/pages/showblogdetail/view/showblogdetailview.dart';
 import 'package:travelblog/provider/supabase_manager.dart';
 
 final supabase = Supabase.instance.client;
@@ -43,14 +44,28 @@ class _BlogListState extends State<BlogList> {
             return BlogCard(
               imageUrl: post['image_link'],
               textContent: post['title'],
-              time: DateFormat('yyyy-MM-dd HH:mm:ss')
+              time: DateFormat('yyyy-MM-dd')
                   .format(DateTime.parse(post['created_at'])),
               like: post['like'],
-              comment: 0,
+              comment: post['comment_numb'],
               fullName: post['user_fullName'],
               imageLink: post['user_image_link'],
               isEditable: false,
               editNavigate: () {},
+              post: post,
+              onTap: () async {
+                final result = await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ShowDetail(post: post),
+                  ),
+                );
+                if (result == true) {
+                  setState(() {
+                    getPostList();
+                  });
+                }
+              },
             );
           }).toList(),
         ),
