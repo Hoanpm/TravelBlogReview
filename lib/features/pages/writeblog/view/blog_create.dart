@@ -1,4 +1,4 @@
-// ignore_for_file: use_build_context_synchronously
+// ignore_for_file: use_build_context_synchronously, prefer_const_constructors, sized_box_for_whitespace
 
 import 'dart:ffi';
 import 'package:intl/intl.dart';
@@ -9,6 +9,7 @@ import 'package:travelblog/color/color.dart';
 import 'package:travelblog/features/auth/widget/auth_field.dart';
 import 'package:travelblog/features/auth/widget/custom_alert_box.dart';
 import 'package:travelblog/features/pages/home/view/home_view.dart';
+import 'package:travelblog/features/pages/login_alert/view/login_alert_view.dart';
 import 'package:travelblog/features/pages/writeblog/widget/dropdown_component.dart';
 import 'package:travelblog/provider/supabase_manager.dart';
 //import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -30,13 +31,12 @@ class _BlogCreateState extends State<BlogCreate> {
   String? selectedCity = "";
   List<String> districtSet = [];
   String? selectedDistrict = "";
-  List<Uint8> imageList = [];
+  String? category = "";
   final GlobalKey<CustomDropdownState> districtDropdownKey =
       GlobalKey<CustomDropdownState>();
-  String? _imageUrl;
-  String? _videoUrl;
-  String? category;
-  String? ggLink;
+  String? _imageUrl = "";
+  String? _videoUrl = "";
+  String? ggLink = "";
 
   List<String> travelTypes = [
     'Ẩm Thực',
@@ -100,7 +100,10 @@ class _BlogCreateState extends State<BlogCreate> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return 
+      supabase.auth.currentUser == null ? 
+      LoginAlert() :
+      Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
         surfaceTintColor: Colors.white,
@@ -335,7 +338,7 @@ class _BlogCreateState extends State<BlogCreate> {
                 ],
               ),
             ),
-            _imageUrl != null
+            _imageUrl != ""
                 ? Container(
                     width: MediaQuery.of(context).size.width,
                     child: Image.network(
@@ -368,10 +371,10 @@ class _BlogCreateState extends State<BlogCreate> {
                 if (title.text == "" ||
                     location.text == "" ||
                     content.text == "" ||
-                    selectedCity == null ||
-                    selectedDistrict == null ||
-                    category == null ||
-                    _imageUrl == null) {
+                    selectedCity == "" ||
+                    selectedDistrict == "" ||
+                    category == "" ||
+                    _imageUrl == "") {
                   var dialog = const CustomAlertDialog(
                       title: "Notice",
                       message: "Bạn cần chọn hết nội dung để đăng bài !");

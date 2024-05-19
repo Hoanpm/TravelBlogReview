@@ -1,15 +1,23 @@
 import 'package:flutter/material.dart';
 
 class CustomDropDown2 extends StatefulWidget {
-  const CustomDropDown2({super.key, required this.items, required this.hintText});
+  CustomDropDown2({super.key, required this.items, required this.hintText, required this.onChanged});
   final List<String> items;
   final String hintText;
+  final ValueChanged<String?> onChanged;
+
   @override
-  State<CustomDropDown2> createState() => _CustomDropDown2State();
+  CustomDropDown2State createState() => CustomDropDown2State();
 }
 
-class _CustomDropDown2State extends State<CustomDropDown2> {
+class CustomDropDown2State extends State<CustomDropDown2> {
   String? selectedValue;
+
+  setSelectedValue() {
+    setState(() {
+      selectedValue = null;
+    });
+  }
   
   @override
   Widget build(BuildContext context) {
@@ -35,6 +43,7 @@ class _CustomDropDown2State extends State<CustomDropDown2> {
       onChanged: (String? newValue) {
         setState(() {
           selectedValue = newValue;
+          widget.onChanged(newValue);
         });
       },
       hint: Text(widget.hintText,style: TextStyle(color:Colors.black, fontWeight: FontWeight.bold),),

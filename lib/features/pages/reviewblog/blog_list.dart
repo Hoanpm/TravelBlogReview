@@ -17,23 +17,12 @@ class BlogList extends StatefulWidget {
 
 class _BlogListState extends State<BlogList> {
   SupabaseManager supabaseManager = SupabaseManager();
-  final userId = supabase.auth.currentUser?.id as String;
   List<Map<String, dynamic>> postList = [];
-  List<Map<String, dynamic>> user = [];
 
   getPostList() async {
     var posts = await supabaseManager.getPostList();
     setState(() {
-      postList = posts;
-      print(postList);
-    });
-  }
-
-  getUserInfo() async {
-    var useri4 = await supabaseManager.getUserInfo(userId);
-    setState(() {
-      user = useri4;
-      print(user);
+      postList = posts.reversed.toList();
     });
   }
 
@@ -41,12 +30,11 @@ class _BlogListState extends State<BlogList> {
   void initState() {
     super.initState();
     getPostList();
-    getUserInfo();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (postList.isEmpty || user.isEmpty) {
+    if (postList.isEmpty) {
       return const Center(child: CircularProgressIndicator());
     } else {
       return SingleChildScrollView(
@@ -59,8 +47,10 @@ class _BlogListState extends State<BlogList> {
                   .format(DateTime.parse(post['created_at'])),
               like: post['like'],
               comment: 0,
-              fullName: user[0]['fullName'],
-              userName: user[0]['username'],
+              fullName: post['user_fullName'],
+              imageLink: post['user_image_link'],
+              isEditable: false,
+              editNavigate: () {},
             );
           }).toList(),
         ),
