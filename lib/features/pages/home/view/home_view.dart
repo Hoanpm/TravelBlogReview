@@ -1,7 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:travelblog/color/color.dart';
-import 'package:travelblog/features/pages/filter/filter_view.dart';
+import 'package:travelblog/features/pages/filter/view/filter_view.dart';
+import 'package:travelblog/features/pages/profile/view/edit_profile.dart';
 import 'package:travelblog/features/pages/profile/view/user_profile_view.dart';
 import 'package:travelblog/features/pages/reviewblog/blog_list.dart';
 import 'package:travelblog/features/pages/search/View/search_view.dart';
