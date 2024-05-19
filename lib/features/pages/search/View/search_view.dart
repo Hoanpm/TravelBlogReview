@@ -7,6 +7,7 @@ import 'package:travelblog/color/color.dart';
 import 'package:travelblog/features/auth/widget/custom_alert_box.dart';
 import 'package:travelblog/features/pages/reviewblog/blog_card.dart';
 import 'package:travelblog/features/pages/search/widget/search_history.dart';
+import 'package:travelblog/features/pages/showblogdetail/view/showblogdetailview.dart';
 import 'package:travelblog/provider/supabase_manager.dart';
 
 final supabase = Supabase.instance.client;
@@ -150,8 +151,7 @@ class _SearchViewState extends State<SearchView> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: searchedHistory.map<Widget>((search) {
-                                return Column(
-                                  children: [
+                                return Column(children: [
                                   SearchText(
                                     inputString: search['searchContent'],
                                     handleTap: () => handleUserSearch(
@@ -169,30 +169,47 @@ class _SearchViewState extends State<SearchView> {
               searchedPost.isEmpty && isSearched == true
                   ? Center(
                       child: Container(
-                        padding: EdgeInsets.only(left: 30, right: 30, top: 20),
-                        child: Text(
-                            "Không có bài viết nào trùng với dữ liệu đã tìm kiếm !",
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: Colors.grey,
-                              fontWeight: FontWeight.bold
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                      ))
+                      padding: EdgeInsets.only(left: 30, right: 30, top: 20),
+                      child: Text(
+                        "Không có bài viết nào trùng với dữ liệu đã tìm kiếm !",
+                        style: TextStyle(
+                            fontSize: 18,
+                            color: Colors.grey,
+                            fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.center,
+                      ),
+                    ))
                   : Column(
                       children: searchedPost.map<Widget>((post) {
                         return BlogCard(
                           imageUrl: post['image_link'],
                           textContent: post['title'],
-                          time: DateFormat('yyyy-MM-dd HH:mm:ss')
+                          time: DateFormat('yyyy-MM-dd')
                               .format(DateTime.parse(post['created_at'])),
                           like: post['like'],
-                          comment: 0,
+                          comment: post['comment_numb'],
                           fullName: post['user_fullName'],
                           imageLink: post['user_image_link'],
                           isEditable: false,
                           editNavigate: () {},
+                          post: post,
+                          onTap: () async {
+                            final result = await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ShowDetail(post: post),
+                              ),
+                            );
+                            if (result == true) {
+                              setState(() {
+                                if (supabase.auth.currentUser == null) {
+                                  handleGuestSearch(search.text);
+                                } else {
+                                  handleUserSearch(search.text);
+                                }
+                              });
+                            }
+                          },
                         );
                       }).toList(),
                     ),
