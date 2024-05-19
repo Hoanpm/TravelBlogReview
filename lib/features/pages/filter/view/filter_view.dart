@@ -7,9 +7,7 @@ import 'package:travelblog/color/color.dart';
 import 'package:travelblog/features/auth/widget/custom_alert_box.dart';
 import 'package:travelblog/features/pages/filter/widget/dropdown_component1.dart';
 import 'package:travelblog/features/pages/reviewblog/blog_card.dart';
-import 'package:travelblog/features/pages/reviewblog/blog_list.dart';
 import 'package:travelblog/features/pages/showblogdetail/view/showblogdetailview.dart';
-import 'package:travelblog/features/pages/writeblog/widget/dropdown_component.dart';
 import 'package:travelblog/provider/supabase_manager.dart';
 
 final supabase = Supabase.instance.client;
