@@ -30,7 +30,6 @@ class _FilterViewState extends State<FilterView> {
     _scrollController.addListener(_scrollListener);
   }
 
-
   void _scrollListener() {
     setState(() {
       _scrollPosition = _scrollController.position.pixels;
